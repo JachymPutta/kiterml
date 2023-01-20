@@ -1,19 +1,13 @@
-#! /home/jachym/Projects/ML/albert/env/bin/python
-#from transformers import AlbertConfig, AlbertModel
+from sklearn.model_selection import train_test_split
 
-import torch
-from transformers import AlbertTokenizer, AlbertForMaskedLM
+LIST_LOCATION = './data/lists_2nodes.txt'
+RESULTS_LOCATION = './data/results_2nodes.txt'
 
-tokenizer = AlbertTokenizer.from_pretrained("albert-base-v2")
-model = AlbertForMaskedLM.from_pretrained("albert-base-v2")
 
-# add mask_token
-inputs = tokenizer("The capital of [MASK] is Paris.", return_tensors="pt")
-with torch.no_grad():
-    logits = model(**inputs).logits
+def readInput(lists, tokens):
+    lists = open(lists, 'r').readlines()
+    tokens = open(tokens, 'r').readlines()
+    return lists, tokens
 
-# retrieve index of [MASK]
-mask_token_index = (inputs.input_ids == tokenizer.mask_token_id)[0].nonzero(as_tuple=True)[0]
-predicted_token_id = logits[0, mask_token_index].argmax(axis=-1)
-
-print(tokenizer.decode(predicted_token_id))
+lists, tokens = readInput(LIST_LOCATION, RESULTS_LOCATION)
+train_lists, test_lists, train_tokens, test_tokens = train_test_split(lists, tokens, test_size=.2)
