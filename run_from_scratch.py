@@ -1,13 +1,14 @@
 import copy
 import time
 import math
+import random
 from typing import Tuple
+
 import torch
 from torch import nn, Tensor
 import torch.nn.functional as F
 from torch.nn import TransformerEncoder, TransformerEncoderLayer
 from torch.utils.data import dataset
-
 from torchtext.datasets import WikiText2
 from torchtext.data.utils import get_tokenizer
 from torchtext.vocab import build_vocab_from_iterator
@@ -15,15 +16,28 @@ from datasets import load_dataset
 
 from transformer_model import TransformerModel,generate_square_subsequent_mask
 
-# train_iter = WikiText2(split='train')
-
-LIST_LOCATION = './data/lists_2nodes.txt'
-RESULTS_LOCATION = './data/results_2nodes.txt'
-# train_iter = load_dataset("text", data_files=LIST_LOCATION)
-train_iter = open(LIST_LOCATION, 'r').read().splitlines()
+# LIST_LOCATION = './data/lists_2nodes.txt'
+# RESULTS_LOCATION = './data/results_2nodes.txt'
+DATA_LOCATION = './data/data3node.txt'
+train_iter = open(DATA_LOCATION, 'r').read().splitlines()
 tokenizer = get_tokenizer(None)
 
 vocab = build_vocab_from_iterator(map(tokenizer,train_iter))
+
+def split_data(data):
+    train = []
+    val = []
+    test = []
+
+    for el in data:
+        pos = random.randrange(100)
+        if (pos < 15):
+            test.append(el)
+        elif (pos >= 15 and pos < 30):
+            val.append(el)
+        else:
+            train.append(el)
+    return train, val, test
 
 def data_process(raw_text_iter: dataset.IterableDataset) -> Tensor:
     """Converts raw text into a flat Tensor."""
@@ -32,11 +46,12 @@ def data_process(raw_text_iter: dataset.IterableDataset) -> Tensor:
 
 # train_iter was "consumed" by the process of building the vocab,
 # so we have to create it again
-train_data = data_process(train_iter)
-val_data = data_process(train_iter)
-test_data = data_process(train_iter)
-# val_data = data_process(val_iter)
-# test_data = data_process(test_iter)
+train_i, val_i, test_i = split_data(train_iter)
+train_data = data_process(train_i)
+# val_data = data_process(train_i)
+# test_data = data_process(train_i)
+val_data = data_process(val_i)
+test_data = data_process(test_i)
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -62,7 +77,8 @@ train_data = batchify(train_data, batch_size)  # shape [seq_len, batch_size]
 val_data = batchify(val_data, eval_batch_size)
 test_data = batchify(test_data, eval_batch_size)
 
-bptt = 35
+bptt = 4
+
 def get_batch(source: Tensor, i: int) -> Tuple[Tensor, Tensor]:
     """
     Args:
