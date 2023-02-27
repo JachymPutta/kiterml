@@ -1,24 +1,27 @@
 #! /bin/lua
+require 'const'
+
 local res = ""
 
-function getRes(filename)
-  local handle = io.popen(string.format("../kiter/Release/bin/kiter -aKPeriodicThroughput -f %s", filename))
+
+local function getRes(filename)
+  local handle = io.popen(string.format("%s -aKPeriodicThroughput -f %s", KITER_PATH, filename))
   res = handle:read("*a")
   handle:close()
 end
 
-function genGraph(cur, l,m, r)
-  os.execute(string.format("./generate_lists.lua %d %d %d %d", cur, l,m, r))
+local function genGraph(cur, one, two, three, four)
+  os.execute(string.format("./generate_lists.lua %d %d %d %d %d", cur, one, two, three, four))
 end
 
-function getFlow(l, m, r)
-  local lo, hi, mid = 1,1000000,0
+local function getFlow(one, two, three, four)
+  local lo, hi, mid = 1, 500, 0
 
   while (lo <= hi) do
     mid = (lo+hi) // 2
 
-    genGraph(mid, l, m ,r)
-    getRes(string.format("lists/3/%d_%d_%d.xml", l, m, r))
+    genGraph(mid, one, two ,three, four)
+    getRes(string.format(GRAPH_TYPE, one, two, three, four))
 
     if string.find(res,"inf") then
       lo = mid+1
@@ -30,8 +33,8 @@ function getFlow(l, m, r)
   while (string.find(res, "inf")) do
     mid = mid + 1
 
-    genGraph(mid, l, m, r)
-    getRes(string.format("lists/3/%d_%d_%d.xml", l, m, r))
+    genGraph(mid, one, two, three, four)
+    getRes(string.format(GRAPH_TYPE, one, two, three, four))
 
     -- print("Additional loop is actually getting called?")
   end
@@ -40,17 +43,20 @@ function getFlow(l, m, r)
   -- print(string.format("Result for %d_%d_%d.xml : %d", l, m, r, mid))
 end
 
-for i = 1, 20, 1 do
-  for j = 1, 20, 1 do
-    for k = 1, 20, 1 do
-      getFlow(i, j, k)
-    -- genGraph(1000000, i, j)
+local function getFlowForRange(lo, hi)
+  for i = lo, hi, 1 do
+    for j = 1, LIM_TOKEN, 1 do
+      for k = 1, LIM_TOKEN, 1 do
+        for l = 1, LIM_TOKEN, 1 do
+          getFlow(i, j, k, l)
+          -- genGraph(1000000, i, j)
+        end
+      end
     end
   end
 end
 
--- getFlow(7, 2, 17)
--- genGraph(100000,3,2,17)
+getFlowForRange(arg[1], arg[2])
 
 
 

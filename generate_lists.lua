@@ -1,19 +1,12 @@
 #! /bin/lua
 
-local LENGTH = 5
-local RANGE = 5
-local ACTOR_TYPE = 'A'
-local INIT_TOKEN = arg[1] == nil and 10000 or arg[1]
--- local SEED = arg[2] == nil and 42 or arg[2]
-local LEFT = arg[2]
-local MID = arg[3]
-local RIGHT = arg[4]
+require 'const'
 
-function printList(list, sep, file)
+local function printList(list, sep, file)
     file:write(table.concat(list, sep))
 end
 
-function genRandList(len, range)
+local function genRandList(len, range)
     list = {}
 
     -- math.randomseed(math.floor(os.clock() * 1000000))
@@ -27,7 +20,7 @@ function genRandList(len, range)
 end
 
 
-function printActors(list, file)
+local function printActors(list, file)
     for i, el in ipairs(list) do
         file:write(string.format('\t\t\t<actor name="a%d" type="%s">\n', i, ACTOR_TYPE))
         file:write(string.format('\t\t\t\t<port name="in%d" type="in" rate="%d"/>\n', i, el))
@@ -36,7 +29,7 @@ function printActors(list, file)
     end
 end
 
-function printChannels(list, file)
+local function printChannels(list, file)
     for i, el in ipairs(list) do
         if (i == #list)
         then
@@ -49,7 +42,7 @@ function printChannels(list, file)
     end
 end
 
-function printProperties(list, file)
+local function printProperties(list, file)
     for i, _ in ipairs(list) do
         file:write(string.format('\t\t\t<actorProperties actor="a%d">\n', i))
         file:write('\t\t\t\t<processor type="cluster_0" default="true">\n')
@@ -59,7 +52,7 @@ function printProperties(list, file)
     end
 end
 
-function printGraph(list, file)
+local function printGraph(list, file)
     -- file:write(HEADER)
     -- os.execute(string.format("echo %s >> lists.txt", table.concat(list,"")))
     file:write('<?xml version="1.0" encoding="UTF-8"?>\n')
@@ -79,33 +72,39 @@ function printGraph(list, file)
     file:write('</sdf3>\n')
 end
 
-function genAllLists()
-  local LIM_TOKEN = 20
+local function genAllLists()
 
-  for left = 1, LIM_TOKEN, 1 do
-    -- for mid = 1, LIM_TOKEN, 1 do
-      for right = 1, LIM_TOKEN, 1 do
-        file = io.open(string.format("./lists/2/%d_%d.xml", left, right), 'w')
-        printGraph({left, right}, file)
-        os.execute(string.format("echo %d,%d >> lists.txt", left, right))
-        file:close()
-      end
-    -- end
+  for one = 1, LIM_TOKEN, 1 do
+  for two = 1, LIM_TOKEN, 1 do
+        for three = 1, LIM_TOKEN, 1 do
+            for four = 1, LIM_TOKEN, 1 do
+                fileName = string.format(GRAPH_TYPE, one, two, three, four)
+                print(fileName)
+                file = io.open(fileName, 'w')
+                printGraph({one, two, three, four}, file)
+                os.execute(string.format("echo %d,%d,%d,%d >> lists.txt", one, two, three, four))
+                file:close()
+            end
+        end
+    end
   end
 
 end
 -- local list = genRandList(LENGTH, RANGE)
 
 
--- genAllLists()
 
-function writeParticularList()
-  file = io.open(string.format("./lists/3/%d_%d_%d.xml",LEFT, MID, RIGHT), 'w')
-  printGraph({LEFT, MID, RIGHT}, file)
-  os.execute(string.format("echo %d,%d,%d >> lists.txt",LEFT, MID, RIGHT))
+local function writeParticularList()
+  file = io.open(string.format(GRAPH_TYPE, ONE, TWO, THREE, FOUR), 'w')
+  printGraph({ONE, TWO, THREE, FOUR}, file)
+  os.execute(string.format("echo %d,%d,%d,%d >> lists.txt",ONE, TWO, THREE, FOUR))
   file:close()
 end
 
-writeParticularList()
+if (ONE) then 
+    writeParticularList()
+else 
+    genAllLists()
+end
 
 
