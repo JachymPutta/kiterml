@@ -2,24 +2,6 @@
 
 require 'const'
 
-local function printList(list, sep, file)
-    file:write(table.concat(list, sep))
-end
-
-local function genRandList(len, range)
-    list = {}
-
-    -- math.randomseed(math.floor(os.clock() * 1000000))
-    -- math.randomseed(SEED)
-
-    for i=1, len,1 do
-        list[i] = math.random(1, range)
-    end
-
-    return list
-end
-
-
 local function printActors(list, file)
     for i, el in ipairs(list) do
         file:write(string.format('\t\t\t<actor name="a%d" type="%s">\n', i, ACTOR_TYPE))
@@ -90,9 +72,6 @@ local function genAllLists()
   end
 
 end
--- local list = genRandList(LENGTH, RANGE)
-
-
 
 local function writeParticularList()
   file = io.open(string.format(GRAPH_TYPE, ONE, TWO, THREE, FOUR), 'w')
