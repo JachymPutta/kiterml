@@ -1,5 +1,5 @@
 #!/bin/bash
-LIMIT=4
+LIMIT=30
 
 for i in $(seq 1 $LIMIT);
 do
