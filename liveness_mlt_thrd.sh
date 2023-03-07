@@ -1,8 +1,9 @@
 #!/bin/bash
-LIMIT=1
+LIMIT=4
 
 for i in $(seq 1 $LIMIT);
 do
-    ./binary_search.lua $i $i
+    ./binary_search.lua $i $i &
 done
 
+wait

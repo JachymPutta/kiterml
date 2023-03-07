@@ -10,7 +10,7 @@ THREE = arg[4]
 FOUR = arg[5]
 
 GRAPH_TYPE = FOUR_NODE
-LIM_TOKEN = 4
+LIM_TOKEN = 30
 LENGTH = 5
 RANGE = 5
 INIT_TOKEN = arg[1] == nil and 500 or arg[1]
