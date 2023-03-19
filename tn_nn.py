@@ -58,28 +58,26 @@ normalizer = tf.keras.layers.Normalization(axis=-1)
 eval_results = []
 abs_errors = []
 
-_, full_test, _, full_res = train_test_split(data, res, test_size=0.2)
+data_train, full_test, result_train, full_res = train_test_split(data, res, test_size=0.15)
 
 # Take data in 20% increments
 for i in range(15, 100, 20):
     # Get the current segment
     test_sz = i/100
     log("Current test size is: " + str(test_sz))
-    _, data_slice, _, result_slice = train_test_split(data, res, test_size=test_sz)
+    _, data_slice, _, result_slice = train_test_split(data_train, result_train, test_size=test_sz)
 
     # Train/Test split
-    dat_trn, dat_tst, res_trn, res_tst = train_test_split(data_slice, result_slice, test_size=0.2)
-    log("Data size - training = " + str(len(dat_trn)))
-    log("Data size - testing = " + str(len(dat_tst)))
+    log("Data size - training = " + str(len(data_slice)))
 
     # Build model
-    normalizer.adapt(dat_trn)
+    normalizer.adapt(data_slice)
     dnn_model = build_and_compile_model(normalizer)
 
     # Train
     dnn_model.fit(
-        dat_trn,
-        res_trn,
+        data_slice,
+        result_slice,
         validation_split=0.2,
         verbose=0, epochs=100)
 
