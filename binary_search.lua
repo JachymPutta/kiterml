@@ -39,7 +39,7 @@ local function getFlow(one, two, three, four)
     -- print("Additional loop is actually getting called?")
   end
 
-  os.execute(string.format("echo %d >> results.txt", mid))
+  os.execute(string.format("echo %d %d %d %d %d >> results.txt", one, two, three, four, mid))
   -- print(string.format("Result for %d_%d_%d.xml : %d", l, m, r, mid))
 end
 

@@ -14,7 +14,7 @@ from tensorflow import keras
 
 LIST_LOCATION = './data/lists_3nodes.txt'
 RESULTS_LOCATION = './data/results_3nodes.txt'
-VERBOSE = False
+VERBOSE = True
 
 #Debugging
 def log(s):
@@ -82,7 +82,7 @@ for i in range(15, 100, 20):
         verbose=0, epochs=100)
 
     # Eval
-    eval_res = dnn_model.evaluate(full_test, full_test, verbose=0)
+    eval_res = dnn_model.evaluate(full_test, full_res, verbose=0)
     log("Eval results for test size " + str(test_sz) + " = " + str(eval_res))
     eval_results.append(eval_res)
 
