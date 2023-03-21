@@ -1,7 +1,7 @@
 KITER_PATH = '../kiter/Release/bin/kiter'
-TWO_NODE = './data/graphs/2/%d_%d.xml'
-THREE_NODE = './data/graphs/3/%d_%d_%d.xml'
-FOUR_NODE = './data/graphs/4/%d_%d_%d_%d.xml'
+TWO_NODE = './data/2/%d_%d.xml'
+THREE_NODE = './data/3/%d_%d_%d.xml'
+FOUR_NODE = './data/4/%d_%d_%d_%d.xml'
 ACTOR_TYPE = 'A'
 
 ONE = arg[2]

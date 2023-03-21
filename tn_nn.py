@@ -12,14 +12,29 @@ from sklearn.model_selection import train_test_split
 from tensorflow.keras import layers
 from tensorflow import keras
 
-LIST_LOCATION = './data/lists_3nodes.txt'
-RESULTS_LOCATION = './data/results_3nodes.txt'
-VERBOSE = True
+# LIST_LOCATION = './data/lists_3nodes.txt'
+# RESULTS_LOCATION = './data/results_3nodes.txt'
+LIST_LOCATION = './data/lists4node.txt'
+RESULTS_LOCATION = './data/results4node.txt'
+VERBOSE = False
+TO_FILE = True
+OUTPUT_FILE = 'results.out'
 
 #Debugging
 def log(s):
     if VERBOSE:
         print(s)
+    if TO_FILE:
+        if os.path.exists(OUTPUT_FILE):
+            append_write = 'a'
+        else:
+            append_write = 'w'
+        fh = open(OUTPUT_FILE, append_write)
+        fh.write(s + '\n')
+        fh.close()
+
+            
+
 
 # Loading data from the files
 def preprocess():
@@ -41,13 +56,13 @@ def preprocess():
 def build_and_compile_model(norm):
     model = keras.Sequential([
         norm,
-        layers.Dense(64, activation='relu'),
-        layers.Dense(64, activation='relu'),
-        layers.Dense(1)
+        layers.Dense(1000, input_dim=4,  activation='relu'),
+        layers.Dense(500, activation='relu'),
+        layers.Dense(1, activation='linear')
     ])
 
-    model.compile(loss='mean_absolute_error',
-                  optimizer=tf.keras.optimizers.Adam(0.001))
+    model.compile(loss='mean_squared_error',
+                  optimizer='adam')
     return model
 
 
@@ -61,7 +76,7 @@ abs_errors = []
 data_train, full_test, result_train, full_res = train_test_split(data, res, test_size=0.15)
 
 # Take data in 20% increments
-for i in range(15, 100, 20):
+for i in range(95, 100, 20):
     # Get the current segment
     test_sz = i/100
     log("Current test size is: " + str(test_sz))
