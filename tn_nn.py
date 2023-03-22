@@ -17,14 +17,14 @@ from tensorflow import keras
 # RESULTS_LOCATION = './data/results_3nodes.txt'
 # LIST_LOCATION = './data/lists4node.txt'
 # RESULTS_LOCATION = './data/results4node.txt'
-VERBOSE = False
+VERBOSE = True
 TO_FILE = True
 OUTPUT_FILE = 'results.out'
 
 if len(sys.argv) > 1:
     DATA_LOCATION = sys.argv[1]
 else:
-    DATA_LOCATION = 'data/data2node.txt'
+    DATA_LOCATION = 'data2node.txt'
 
 #Debugging
 def log(s):
@@ -67,20 +67,20 @@ def build_and_compile_model(norm):
 
 
 # Load the data
-log("Loading data...")
+print("Loading data...")
 data, res = preprocess()
-log("Data loaded!")
+print("Data loaded!")
 normalizer = tf.keras.layers.Normalization(axis=-1)
 
 eval_results = []
 abs_errors = []
 
-log("Train/Test split")
+print("Train/Test split")
 data_train, full_test, result_train, full_res = train_test_split(data, res, test_size=0.15)
 
 # Take data in 20% increments
-for i in range(95, 100, 20):
-    log("Starting iteration")
+for i in range(15, 100, 20):
+    print("Starting iteration")
 
     # Get the current segment
     test_sz = i/100
@@ -93,16 +93,16 @@ for i in range(95, 100, 20):
     dnn_model = build_and_compile_model(normalizer)
 
     # Train
-    log("Starting training")
+    print("Starting training")
     dnn_model.fit(
         data_slice,
         result_slice,
         validation_split=0.2,
-        verbose=1, epochs=100)
-    log("Training done!")
+        verbose=1, epochs=50)
+    print("Training done!")
 
     # Eval
-    log("Starging Evaluation")
+    print("Starging Evaluation")
     eval_res = dnn_model.evaluate(full_test, full_res, verbose=1)
     log("Eval results for test size " + str(test_sz) + " = " + str(eval_res))
     eval_results.append(eval_res)
