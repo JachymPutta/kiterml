@@ -7,6 +7,7 @@ np.set_printoptions(precision=3, suppress=True)
 import os
 import tensorflow as tf
 import pandas as pd
+import sys
 
 from sklearn.model_selection import train_test_split
 from tensorflow.keras import layers
@@ -14,11 +15,16 @@ from tensorflow import keras
 
 # LIST_LOCATION = './data/lists_3nodes.txt'
 # RESULTS_LOCATION = './data/results_3nodes.txt'
-LIST_LOCATION = './data/lists4node.txt'
-RESULTS_LOCATION = './data/results4node.txt'
+# LIST_LOCATION = './data/lists4node.txt'
+# RESULTS_LOCATION = './data/results4node.txt'
 VERBOSE = False
 TO_FILE = True
 OUTPUT_FILE = 'results.out'
+
+if len(sys.argv) > 1:
+    DATA_LOCATION = sys.argv[1]
+else:
+    DATA_LOCATION = 'data/data2node.txt'
 
 #Debugging
 def log(s):
@@ -33,22 +39,16 @@ def log(s):
         fh.write(s + '\n')
         fh.close()
 
-            
-
-
 # Loading data from the files
 def preprocess():
     data = []
     results = []
 
-    with open(LIST_LOCATION) as listFile:
-        with open(RESULTS_LOCATION) as resFile:
-            for lis, res in zip(listFile, resFile):
-                intList = list(map(int, lis[:-1].split(',')))
-
-                results.append(int(res[:-1]))
-                data.append(intList)
-
+    with open(DATA_LOCATION) as data_file:
+        for row in data_file:
+            num_list = list(map(int, row.split(' ')))
+            data.append(num_list[:-1])
+            results.append(num_list[-1:])
     return pd.DataFrame(data), pd.DataFrame(results)
 
 
@@ -67,37 +67,43 @@ def build_and_compile_model(norm):
 
 
 # Load the data
+log("Loading data...")
 data, res = preprocess()
+log("Data loaded!")
 normalizer = tf.keras.layers.Normalization(axis=-1)
 
 eval_results = []
 abs_errors = []
 
+log("Train/Test split")
 data_train, full_test, result_train, full_res = train_test_split(data, res, test_size=0.15)
 
 # Take data in 20% increments
 for i in range(95, 100, 20):
+    log("Starting iteration")
+
     # Get the current segment
     test_sz = i/100
-    log("Current test size is: " + str(test_sz))
     _, data_slice, _, result_slice = train_test_split(data_train, result_train, test_size=test_sz)
 
-    # Train/Test split
-    log("Data size - training = " + str(len(data_slice)))
+    log("Training set is " + str(test_sz) + " of the total data i.e. " + str(len(data_slice)) + " points.")
 
     # Build model
     normalizer.adapt(data_slice)
     dnn_model = build_and_compile_model(normalizer)
 
     # Train
+    log("Starting training")
     dnn_model.fit(
         data_slice,
         result_slice,
         validation_split=0.2,
-        verbose=0, epochs=100)
+        verbose=1, epochs=100)
+    log("Training done!")
 
     # Eval
-    eval_res = dnn_model.evaluate(full_test, full_res, verbose=0)
+    log("Starging Evaluation")
+    eval_res = dnn_model.evaluate(full_test, full_res, verbose=1)
     log("Eval results for test size " + str(test_sz) + " = " + str(eval_res))
     eval_results.append(eval_res)
 
