@@ -17,9 +17,11 @@ from tensorflow import keras
 # RESULTS_LOCATION = './data/results_3nodes.txt'
 # LIST_LOCATION = './data/lists4node.txt'
 # RESULTS_LOCATION = './data/results4node.txt'
-VERBOSE = True
+
+VERBOSE = False
 TO_FILE = True
-OUTPUT_FILE = 'results.out'
+OUTPUT_FILE = 'result_2_node.out'
+MULT_FACTOR = 100
 
 if len(sys.argv) > 1:
     DATA_LOCATION = sys.argv[1]
@@ -47,8 +49,9 @@ def preprocess():
     with open(DATA_LOCATION) as data_file:
         for row in data_file:
             num_list = list(map(int, row.split(' ')))
-            data.append(num_list[:-1])
-            results.append(num_list[-1:])
+            for i in range(MULT_FACTOR):
+                data.append(num_list[:-1])
+                results.append(num_list[-1:])
     return pd.DataFrame(data), pd.DataFrame(results)
 
 
@@ -56,8 +59,8 @@ def preprocess():
 def build_and_compile_model(norm):
     model = keras.Sequential([
         norm,
-        layers.Dense(1000, input_dim=4,  activation='relu'),
-        layers.Dense(500, activation='relu'),
+        layers.Dense(100, input_dim=4,  activation='relu'),
+        layers.Dense(50, activation='relu'),
         layers.Dense(1, activation='linear')
     ])
 
@@ -73,7 +76,8 @@ print("Data loaded!")
 normalizer = tf.keras.layers.Normalization(axis=-1)
 
 eval_results = []
-abs_errors = []
+abs_percentage_errors = []
+train_sizes = []
 
 print("Train/Test split")
 data_train, full_test, result_train, full_res = train_test_split(data, res, test_size=0.15)
@@ -86,7 +90,8 @@ for i in range(15, 100, 20):
     test_sz = i/100
     _, data_slice, _, result_slice = train_test_split(data_train, result_train, test_size=test_sz)
 
-    log("Training set is " + str(test_sz) + " of the total data i.e. " + str(len(data_slice)) + " points.")
+    print("Training set is " + str(test_sz) + " of the total data i.e. " + str(len(data_slice)) + " points.")
+    train_sizes.append((test_sz, len(data_slice)))
 
     # Build model
     normalizer.adapt(data_slice)
@@ -98,27 +103,42 @@ for i in range(15, 100, 20):
         data_slice,
         result_slice,
         validation_split=0.2,
-        verbose=1, epochs=50)
+        verbose=VERBOSE,
+        epochs=20)
     print("Training done!")
 
     # Eval
     print("Starging Evaluation")
     eval_res = dnn_model.evaluate(full_test, full_res, verbose=1)
-    log("Eval results for test size " + str(test_sz) + " = " + str(eval_res))
-    eval_results.append(eval_res)
+    print("Eval results for test size " + str(test_sz) + " = " + str(eval_res))
+    eval_results.append(float(eval_res))
 
     # Get error
     test_predictions = dnn_model.predict(full_test).flatten()
     error = (100 * (test_predictions - full_res.T)) / full_res.T
-    abs_error = error.T.sum() / len(full_test)
-    log("Error for test size " + str(test_sz) + " = " + str(float(abs_error)))
+    abs_error = abs(error).T.sum() / len(full_test)
+    print("Error for test size " + str(test_sz) + " = " + str(float(abs_error)))
 
-    abs_errors.append(abs_error)
+    abs_percentage_errors.append(float(abs_error))
 
-print("Absolute errors:\n")
-print(abs_errors)
-print("\n\n")
 
-print("Evaluations:\n")
-print(eval_results)
-print("\n\n")
+log("Evaluation results")
+log('=' * 80)
+log("Data metadata:\n" +
+    "  Location: " + DATA_LOCATION +
+    "\n  Size: "+ str(len(data)) + " points\n" +
+    "  MULT_FACTOR = " + str(MULT_FACTOR) + "\n")
+log("Percentage of data used for training:")
+
+s = ""
+for sz in train_sizes:
+    s += str(sz[0]) + "%% (" + str(sz[1]) + ")  " 
+
+log(s + "\n")
+log("Average Percentage Errors:" )
+log(' '.join(map(str, abs_percentage_errors)))
+log("\n")
+log("Evaluation results:")
+log(' '.join(map(str, eval_results)))
+log('=' * 80)
+log("\n\n")
