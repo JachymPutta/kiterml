@@ -20,7 +20,7 @@ from tensorflow import keras
 
 VERBOSE = False
 TO_FILE = True
-OUTPUT_FILE = 'result_2_node.out'
+OUTPUT_FILE = 'result.tmp'
 MULT_FACTOR = 100
 
 if len(sys.argv) > 1:
@@ -137,7 +137,7 @@ for sz in train_sizes:
 log(s + "\n")
 log("Average Percentage Errors:" )
 log(' '.join(map(str, abs_percentage_errors)))
-log("\n")
+log("")
 log("Evaluation results:")
 log(' '.join(map(str, eval_results)))
 log('=' * 80)

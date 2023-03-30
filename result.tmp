@@ -1,0 +1,20 @@
+Current test size is: 0.15
+Data size - training = 51
+Eval results for test size 0.15 = 8.423274040222168
+Error for test size 0.15 = 102.38898078189364
+Current test size is: 0.35
+Data size - training = 119
+Eval results for test size 0.35 = 7.549306869506836
+Error for test size 0.35 = 104.17122138874507
+Current test size is: 0.55
+Data size - training = 188
+Eval results for test size 0.55 = 8.180333137512207
+Error for test size 0.55 = 102.3981749789991
+Current test size is: 0.75
+Data size - training = 255
+Eval results for test size 0.75 = 7.5637526512146
+Error for test size 0.75 = 99.75379454813807
+Current test size is: 0.95
+Data size - training = 323
+Eval results for test size 0.95 = 6.92786169052124
+Error for test size 0.95 = 100.74967850709886
