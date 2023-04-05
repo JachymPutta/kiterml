@@ -11,7 +11,9 @@ np.set_printoptions(precision=3, suppress=True)
 import matplotlib.pyplot as plt
 
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler
 from tensorflow.keras import layers
+from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow import keras
 
 # LIST_LOCATION = './data/lists_3nodes.txt'
@@ -23,8 +25,8 @@ VERBOSE = False
 TO_FILE = True
 OUTPUT_FILE = 'result.tmp'
 FIG_DIR = 'figs/'
-MULT_FACTOR = [1,10,100,1000]
-DUP_FACTOR = 1
+MULT_FACTOR = [1,2,3,4,5]
+DUP_FACTOR = 10
 TRAIN_SET_PERCENTAGE = [15, 35, 55, 75, 95]
 
 if len(sys.argv) > 1:
@@ -109,11 +111,12 @@ def preprocess():
 
 
 
-def build_and_compile_model(norm):
+def build_and_compile_model():
     model = keras.Sequential([
-        norm,
-        layers.Dense(100, input_dim=4,  activation='relu'),
-        layers.Dense(50, activation='relu'),
+        layers.Dense(64, activation='relu', input_shape=(2,)),
+        layers.BatchNormalization(),
+        layers.Dense(32, activation='relu'),
+        layers.BatchNormalization(),
         layers.Dense(1, activation='linear')
     ])
 
@@ -145,8 +148,7 @@ def train_iter(data_train, full_test, result_train, full_res):
         train_sizes.append((test_sz, len(data_slice)))
 
         # Build model
-        normalizer.adapt(data_slice)
-        dnn_model = build_and_compile_model(normalizer)
+        dnn_model = build_and_compile_model()
 
         # Train
         print("Starting training")
@@ -155,7 +157,10 @@ def train_iter(data_train, full_test, result_train, full_res):
             result_slice,
             validation_split=0.2,
             verbose=VERBOSE,
-            epochs=20)
+            epochs=20,
+            batch_size=32,
+            callbacks=[early_stop]
+        )
         histories.append(history)
         print("Training done!")
 
@@ -184,12 +189,14 @@ def train_iter(data_train, full_test, result_train, full_res):
 print("Loading data...")
 d,r = preprocess()
 print("Data loaded!")
-normalizer = tf.keras.layers.Normalization(axis=-1)
+early_stop = EarlyStopping(monitor='val_loss', patience=10)
+scaler = MinMaxScaler()
+
 
 data_train, full_test, result_train, full_res = train_test_split(d, r, test_size=0.15)
 
 all_percentage_errors, all_full_errors, all_predictions, all_evals, all_train_sizes, all_histories = \
-train_iter(data_train, full_test, result_train, full_res )
+train_iter(scaler.fit_transform(data_train), scaler.transform(full_test), result_train, full_res )
 
 
 # Write out results
