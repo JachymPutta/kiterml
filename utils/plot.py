@@ -31,7 +31,7 @@ def plot_all_errors(errors):
         fig.savefig(FIG_DIR + 'all_errors.png')
         
         
-def plot_all_histories(histories):
+def plot_histories(histories):
     fig, axs = plt.subplots(len(TRAIN_SET_PERCENTAGE))
     
     fig.suptitle('Histories')

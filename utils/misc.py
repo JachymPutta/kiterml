@@ -1,5 +1,6 @@
 from constants import OUTPUT_FILE, VERBOSE, TO_FILE
 
+
 def freeze_reqs():
     get_ipython().system("pip freeze > './requirements.txt'")
 
