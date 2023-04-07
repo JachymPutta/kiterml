@@ -1,21 +1,8 @@
-import torch
-from torch.optim import AdamW
-from torch.utils.data import DataLoader, TensorDataset
-from sklearn.model_selection import train_test_split
-from transformers import AutoModelForMaskedLM, AutoTokenizer
-from datasets import load_dataset
-
-
 from transformers import pipeline
 
-
-MODEL_BASE = 'distilbert-base-uncased'
-PROMPT = "a normalized synchronous data flow graph with weights (2,3) needs [MASK] tokens for liveness" 
-
-classifier = pipeline("fill-mask", model = MODEL_BASE)
-
-print(classifier(PROMPT))
-
+def run_pretrained(model_base = MODEL_BASE, prompt = PROMPT):
+    classifier = pipeline("fill-mask", model = MODEL_BASE)
+    return classifier(PROMPT)
 
 """
 Prompt:

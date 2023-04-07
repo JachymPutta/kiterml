@@ -3,7 +3,7 @@
 
 from utils.data_utils import preprocess
 from utils.eval_utils import eval_iter, eval_model
-from utils.plot import plot_all_histories
+from utils.plot import plot_histories
 
 from models.tf_dnn import train_tf_dnn
 from models.sklearn_dnn import train_sklearn_dnn
@@ -16,6 +16,6 @@ x_train, x_test, y_train, y_test = preprocess()
 
 # Plotting
 # plot_histories(hist_tf)
-# plot_loss_curves(loss_curves_sklearn)
+# plot_loss_curves(loss_curves)
 
 
