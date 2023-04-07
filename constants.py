@@ -1,0 +1,9 @@
+VERBOSE = False
+TO_FILE = True
+OUTPUT_FILE = 'result.tmp'
+FIG_DIR = 'figs/'
+MULT_FACTOR = [1,2,3,4,5]
+DUP_FACTOR = 10
+TRAIN_SET_PERCENTAGE = [15, 35, 55, 75, 95]
+DATA_LOCATION = 'data/data2node.txt'
+RANDOM_SEED = 42
