@@ -2,6 +2,10 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from sklearn.model_selection import train_test_split
 
 from constants import TRAIN_SET_PERCENTAGE
+from utils.misc import merge_dicts
+
+from models.sklearn_dnn import train_sklearn_dnn
+from models.tf_dnn import train_tf_dnn
 
 def better_eval_model(model, x_test, y_test):
     y_pred = model.predict(x_test)
@@ -12,46 +16,37 @@ def better_eval_model(model, x_test, y_test):
     auc_roc = roc_auc_score(y_test, y_pred_prob)
     return {'accuracy': accuracy, 'precision': precision, 'recall': recall, 'f1': f1, 'auc_roc': auc_roc}
 
-def eval_sklearn_dnn(model, x_test, y_test):
-    y_pred = model.predict(x_test).flatten()
-    error = (100 * (y_pred - y_test.T)) / y_test.T
-    abs_error = abs(error).T.sum() / len(x_test)
-    return {'abs_error': abs_error, 'error_vec': error, 'predictions': y_pred}
-
-def eval_tf_dnn(model, x_test, y_test):
-    print("Starging Evaluation")
-    eval_res = model.evaluate(x_test, y_test, verbose=1)
-    # print("Eval results for test size " + str(test_sz) + " = " + str(eval_res))
-    y_pred = model.predict(x_test).flatten()
-    error = (100 * (y_pred - y_test.T)) / y_test.T
-    abs_error = abs(error).T.sum() / len(x_test)
-    # print("Error for test size " + str(test_sz) + " = " + str(float(abs_error)))
-        
-    return {'abs_error': abs_error, 'error_vec': error, 'predictions': y_pred, 'eval_res': eval_res}
-
 def eval_model(model, x_test, y_test):
+    print("Starging Evaluation")
+    # TF only
+#     eval_res = model.evaluate(x_test, y_test, verbose=1)
     y_pred = model.predict(x_test).flatten()
     error = (100 * (y_pred - y_test.T)) / y_test.T
     abs_error = abs(error).T.sum() / len(x_test)
-
-    # print("Eval results for test size " + str(test_sz) + " = " + str(eval_res))
-    # print("Error for test size " + str(test_sz) + " = " + str(float(abs_error)))
         
-    return {'abs_error': abs_error, 'error_vec': error, 'predictions': y_pred}
+    return {'abs_error': float(abs_error), 'error_vec': error, 'predictions': y_pred}
 
-def eval_iter(train_fun, eval_fun, x_train, x_test, y_train, y_test):
-    histories = []
+def run_eval(model_type, x_train, x_test, y_train, y_test):
     evals = []
 
-    for i in TRAIN_SET_PERCENTAGE:
-        test_sz = i/100
-        _, x_slice, _, y_slice = train_test_split(x_train, y_train, test_size=test_sz)
-        model, history = train_fun(x_slice, y_slice)
-        histories.append(history)
-        eval_res = eval_fun(model, x_test, y_test)
-        evals.append(eval_res)
-    return histories, evals
-
-
-
-    
+    match model_type:
+        case 'tf':
+            for i in TRAIN_SET_PERCENTAGE:
+                test_sz = i/100
+                _, x_slice, _, y_slice = train_test_split(x_train, y_train, test_size=test_sz)
+                
+                model, history = train_tf_dnn(x_slice, y_slice)
+                eval_res = eval_model(model, x_test, y_test)
+                eval_res['train_val_loss'] = (history.history['loss'], history.history['val_loss'])
+                eval_res['train_sz'] = (test_sz, len(x_slice))
+                evals.append(eval_res)
+        case 'sklearn':
+            for i in TRAIN_SET_PERCENTAGE:
+                test_sz = i/100
+                x_val_slice, x_slice, y_val_slice, y_slice = train_test_split(x_train, y_train, test_size=test_sz)
+                model, history = train_sklearn_dnn(x_slice, y_slice, x_val_slice, y_val_slice)
+                eval_res = eval_model(model, x_test, y_test)
+                eval_res['train_val_loss'] = (model.loss_curve_, model.validation_scores_)
+                eval_res['train_sz'] = (test_sz, len(x_slice))
+                evals.append(eval_res)
+    return merge_dicts(evals)

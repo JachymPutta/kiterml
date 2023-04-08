@@ -1,3 +1,7 @@
+# Model types
+TF_MODEL = 'tf'
+SKLEARN_MODEL = 'sklearn'
+
 # Logging
 VERBOSE = False
 TO_FILE = True

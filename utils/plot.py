@@ -29,33 +29,18 @@ def plot_errors(errors):
         
     if TO_FILE:
         fig.savefig(FIG_DIR + 'all_errors.png')
-        
-        
-def plot_histories(histories):
+
+def plot_loss_curves(model_type, curves):
     fig, axs = plt.subplots(len(TRAIN_SET_PERCENTAGE))
     
-    fig.suptitle('Histories')
-    fig.supxlabel('Accuracy')
+    fig.suptitle(model_type + ' Histories')
+    fig.supxlabel('Epochs')
     fig.supylabel('Loss')
     
     for i in range(len(TRAIN_SET_PERCENTAGE)):
-        axs[i].plot(histories[i].history['loss'])
-        axs[i].plot(histories[i].history['val_loss'])
+        axs[i].plot(curves[i][0], label='train')
+        axs[i].plot(curves[i][1], label='val')
         axs[i].legend(['train', 'val'], loc='upper left')
 
     if TO_FILE:
-        fig.savefig(FIG_DIR + 'all_histories.png')
-
-def plot_loss_curves(curves):
-    fig, axs = plt.subplots(len(TRAIN_SET_PERCENTAGE))
-    
-    fig.suptitle('Histories')
-    fig.supxlabel('Accuracy')
-    fig.supylabel('Loss')
-    
-    for i in range(len(TRAIN_SET_PERCENTAGE)):
-        axs[i].plot(curves[i])
-        axs[i].legend(['train', 'val'], loc='upper left')
-
-    if TO_FILE:
-        fig.savefig(FIG_DIR + 'all_histories.png')
+        fig.savefig(FIG_DIR + model_type + '_loss_curves.png')

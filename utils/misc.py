@@ -1,39 +1,47 @@
-from constants import OUTPUT_FILE, VERBOSE, TO_FILE
+import os
+
+from constants import OUTPUT_FILE, VERBOSE, TO_FILE, MULT_FACTOR, DUP_FACTOR, DATA_LOCATION
 
 
 def freeze_reqs():
     get_ipython().system("pip freeze > './requirements.txt'")
 
-def log(s):
+def log(file = OUTPUT_FILE, s = ""):
     if VERBOSE:
         print(s)
     if TO_FILE:
-        if os.path.exists(OUTPUT_FILE):
+        if os.path.exists(file):
             append_write = 'a'
         else:
             append_write = 'w'
-        fh = open(OUTPUT_FILE, append_write)
+        fh = open(file, append_write)
         fh.write(s + '\n')
         fh.close()
 
-def write_results(all_train_sizes, all_percentage_errors, all_evals):
-    log("Evaluation results")
-    log('=' * 80)
-    log("Data metadata:\n" +
-    "  Location: " + DATA_LOCATION +
-    "\n  Size: "+ str(len(d)) + " points\n" +
-    "  MULT_FACTOR = " + str(MULT_FACTOR) + "\n")
-    log("Percentage of data used for training:")
+def merge_dicts(dicts):
+    merged_dict = {}
+    for key in dicts[0].keys():
+        merged_dict[key] = []
+        for d in dicts:
+            merged_dict[key].append(d[key])
+    return merged_dict
+
+
+def write_results(file, evals):
+    log(file, "Evaluation results")
+    log(file, '-' * 80)
+    log(file, "Data metadata:\n" +
+    "  Location: " + DATA_LOCATION + "\n" +
+    "  MULT_FACTOR = " + str(MULT_FACTOR) + "\n" +
+    "  DUP_FACTOR = " + str(DUP_FACTOR) + "\n")
+    log(file, "Percentage of data used for training:")
 
     s = ""
-    for sz in all_train_sizes:
-        s += str(sz[0]) + "%% (" + str(sz[1]) + ")  " 
+    for sz in evals['train_sz']:
+        s += str(sz[0]) + "% (" + str(sz[1]) + ")  " 
 
-    log(s + "\n")
-    log("Average Percentage Errors:" )
-    log(' '.join(map(str, all_percentage_errors)))
-    log("")
-    log("Evaluation results:")
-    log(' '.join(map(str, all_evals)))
-    log('=' * 80)
-    log("\n\n")
+    log(file, s + "\n")
+    log(file, "Average Percentage Errors:" )
+    log(file, ' '.join(map(str, evals['abs_error'])))
+    log(file, '-' * 80)
+    log(file, "\n\n")
