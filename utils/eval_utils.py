@@ -29,8 +29,7 @@ def eval_model(model, x_test, y_test):
 def run_eval(model_type, x_train, x_test, y_train, y_test):
     evals = []
 
-    match model_type:
-        case 'tf':
+    if model_type == 'tf':
             for i in TRAIN_SET_PERCENTAGE:
                 test_sz = i/100
                 _, x_slice, _, y_slice = train_test_split(x_train, y_train, test_size=test_sz)
@@ -40,7 +39,7 @@ def run_eval(model_type, x_train, x_test, y_train, y_test):
                 eval_res['train_val_loss'] = (history.history['loss'], history.history['val_loss'])
                 eval_res['train_sz'] = (test_sz, len(x_slice))
                 evals.append(eval_res)
-        case 'sklearn':
+    elif model_type == 'sklearn':
             for i in TRAIN_SET_PERCENTAGE:
                 test_sz = i/100
                 x_val_slice, x_slice, y_val_slice, y_slice = train_test_split(x_train, y_train, test_size=test_sz)
@@ -49,4 +48,5 @@ def run_eval(model_type, x_train, x_test, y_train, y_test):
                 eval_res['train_val_loss'] = (model.loss_curve_, model.validation_scores_)
                 eval_res['train_sz'] = (test_sz, len(x_slice))
                 evals.append(eval_res)
+        
     return merge_dicts(evals)
