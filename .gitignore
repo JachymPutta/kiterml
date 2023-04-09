@@ -1,4 +1,11 @@
 all_data/
+res/
+figs/
+
+*.pkl
+*.h5
+*.tmp
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

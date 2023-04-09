@@ -12,6 +12,5 @@ def build_and_compile_model():
 
 def train_sklearn_dnn(x_train, y_train, x_test, y_test):
     model = build_and_compile_model()
-    history = model.fit(x_train,
-              y_train.iloc[:,0])
-    return model, history
+    model.fit(x_train, y_train.iloc[:,0])
+    return model

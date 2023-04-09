@@ -4,6 +4,17 @@ from tensorflow import keras
 
 from constants import VERBOSE, GRAPH_SIZE
 
+def model_v0():
+    model = keras.Sequential([
+        layers.Dense(1000, activation='relu', input_shape=(GRAPH_SIZE,)),
+        layers.Dense(500, activation='relu'),
+        layers.Dense(1, activation='linear')
+    ])
+
+    model.compile(loss='mean_squared_error',
+                  optimizer='adam')
+    return model
+
 def model_v1():
     model = keras.Sequential([
         layers.Dense(64, activation='relu', input_shape=(GRAPH_SIZE,)),

@@ -30,6 +30,13 @@ def plot_errors(errors):
     if TO_FILE:
         fig.savefig(FIG_DIR + 'all_errors.png')
 
+def plot_loss_curve(model_type, curves):
+    plt.plot(curves[0][0], label='train')
+    plt.plot(curves[0][1], label='val')
+
+    if TO_FILE:
+        plt.savefig(FIG_DIR + model_type + '_loss_curves.png')
+
 def plot_loss_curves(model_type, curves):
     fig, axs = plt.subplots(len(TRAIN_SET_PERCENTAGE))
     
