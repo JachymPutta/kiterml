@@ -1,6 +1,7 @@
 all_data/
 res/
 figs/
+random_search/
 
 *.pkl
 *.h5

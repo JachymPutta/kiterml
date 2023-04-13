@@ -45,3 +45,9 @@ def write_results(file, evals):
     log(file, ' '.join(map(str, evals['abs_error'])))
     log(file, '-' * 80)
     log(file, "\n\n")
+
+def write_config(file, models):
+    for i, model in enumerate(models):
+        print(file, f"Model {i+1}")
+        print(file, model.get_config())
+        print(file, "####################################")

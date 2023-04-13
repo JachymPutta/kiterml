@@ -8,15 +8,6 @@ from utils.misc import merge_dicts
 from models.sklearn_dnn import train_sklearn_dnn
 from models.tf_dnn import train_tf_dnn
 
-def better_eval_model(model, x_test, y_test):
-    y_pred = model.predict(x_test)
-    accuracy = accuracy_score(y_test, y_pred)
-    precision = precision_score(y_test, y_pred)
-    recall = recall_score(y_test, y_pred)
-    f1 = f1_score(y_test, y_pred)
-    auc_roc = roc_auc_score(y_test, y_pred_prob)
-    return {'accuracy': accuracy, 'precision': precision, 'recall': recall, 'f1': f1, 'auc_roc': auc_roc}
-
 def eval_model(model, x_test, y_test):
     print("Starging Evaluation")
     # TF only

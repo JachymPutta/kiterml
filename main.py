@@ -7,12 +7,16 @@ from constants import TF_MODEL, SKLEARN_MODEL, OUTPUT_FILE
 
 from utils.data_utils import preprocess
 from utils.plot import plot_loss_curves, plot_loss_curve
-from utils.misc import write_results
+from utils.misc import write_results, write_config
 from utils.eval_utils import run_eval, run_eval_iter, eval_model
+from models.random_search import run_random_search
 
 x_train, x_test, y_train, y_test = preprocess()
 
-# Training all the models
+rs_model = run_random_search(x_train, y_train)
+evals_rs = run_eval(TF_MODEL,  x_train, x_test, y_train, y_test)
+
+# Training models
 # evals_tf = run_eval(TF_MODEL,  x_train, x_test, y_train, y_test)
 # evals_sklearn = run_eval(SKLEARN_MODEL, x_train, x_test, y_train, y_test)
 
