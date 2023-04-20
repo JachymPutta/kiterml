@@ -12,7 +12,7 @@ FIG_DIR = 'figs/'
 DATA_LOCATION = 'data/data2node.txt'
 
 # Model Parameters
-MULT_FACTOR = [1,2,3,4]
+MULT_FACTOR = [1, 2, 3, 4]
 DUP_FACTOR = 1
 TRAIN_SET_PERCENTAGE = [15, 35, 55, 75, 95]
 GRAPH_SIZE = 2

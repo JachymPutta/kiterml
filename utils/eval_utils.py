@@ -25,7 +25,7 @@ def run_eval(model_type, x_train, x_test, y_train, y_test):
             eval_res['train_val_loss'] = (history.history['loss'], history.history['val_loss'])
             eval_res['train_sz'] = (100, len(x_train))
             if TO_FILE:
-                model.save('tf_model.h5')
+                model.save('tf_model', save_format='tf')
                 with open('tf_eval_res.pkl', 'wb+') as f:
                     pickle.dump(eval_res, f)
     elif model_type == 'sklearn':

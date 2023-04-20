@@ -13,11 +13,12 @@ from models.random_search import run_random_search
 
 x_train, x_test, y_train, y_test = preprocess()
 
-rs_model = run_random_search(x_train, y_train)
-evals_rs = run_eval(TF_MODEL,  x_train, x_test, y_train, y_test)
+# Random search
+# rs_model = run_random_search(x_train, y_train)
+# evals_rs = run_eval(TF_MODEL,  x_train, x_test, y_train, y_test)
 
 # Training models
-# evals_tf = run_eval(TF_MODEL,  x_train, x_test, y_train, y_test)
+evals_tf = run_eval(TF_MODEL,  x_train, x_test, y_train, y_test)
 # evals_sklearn = run_eval(SKLEARN_MODEL, x_train, x_test, y_train, y_test)
 
 # Record results -- only for iterative training

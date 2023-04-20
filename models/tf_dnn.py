@@ -51,10 +51,24 @@ def model_v2():
                   optimizer='adam')
     return model
 
+def model_v3():
+    model = keras.Sequential([
+        layers.Dense(500, activation='relu'),
+        layers.Dense(1000, activation='relu', input_shape=(GRAPH_SIZE,)),
+        layers.Dense(10000, activation='relu', input_shape=(GRAPH_SIZE,)),
+        layers.Dense(1000, activation='relu', input_shape=(GRAPH_SIZE,)),
+        layers.Dense(500, activation='relu'),
+        layers.Dense(1, activation='linear')
+    ])
+
+    model.compile(loss='mean_squared_error',
+                  optimizer='adam')
+    return model
+
 def train_tf_dnn(x_train, y_train):
     early_stop = EarlyStopping(monitor='val_loss', patience=10)
 
-    model = model_v2()
+    model = model_v0()
 
     history = model.fit(
         x_train,
