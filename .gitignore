@@ -2,6 +2,7 @@ all_data/
 res/
 figs/
 random_search/
+*model/
 
 *.pkl
 *.h5

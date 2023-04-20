@@ -19,13 +19,41 @@ def eval_model(model, x_test, y_test):
     return {'abs_error': float(abs_error), 'error_vec': error, 'predictions': y_pred}
 
 def run_eval(model_type, x_train, x_test, y_train, y_test):
-    if model_type == 'tf':
-            model, history = train_tf_dnn(x_train, y_train)
+
+    if model_type == 'tf0':
+            model, history = train_tf_dnn(0, x_train, y_train)
             eval_res = eval_model(model, x_test, y_test)
             eval_res['train_val_loss'] = (history.history['loss'], history.history['val_loss'])
             eval_res['train_sz'] = (100, len(x_train))
             if TO_FILE:
-                model.save('tf_model', save_format='tf')
+                model.save((model_type + '_model'), save_format='tf')
+                with open('tf_eval_res.pkl', 'wb+') as f:
+                    pickle.dump(eval_res, f)
+    elif model_type == 'tf1':
+            model, history = train_tf_dnn(1, x_train, y_train)
+            eval_res = eval_model(model, x_test, y_test)
+            eval_res['train_val_loss'] = (history.history['loss'], history.history['val_loss'])
+            eval_res['train_sz'] = (100, len(x_train))
+            if TO_FILE:
+                model.save((model_type + '_model'), save_format='tf')
+                with open('tf_eval_res.pkl', 'wb+') as f:
+                    pickle.dump(eval_res, f)
+    elif model_type == 'tf2':
+            model, history = train_tf_dnn(2, x_train, y_train)
+            eval_res = eval_model(model, x_test, y_test)
+            eval_res['train_val_loss'] = (history.history['loss'], history.history['val_loss'])
+            eval_res['train_sz'] = (100, len(x_train))
+            if TO_FILE:
+                model.save((model_type + '_model'), save_format='tf')
+                with open('tf_eval_res.pkl', 'wb+') as f:
+                    pickle.dump(eval_res, f)
+    elif model_type == 'tf3':
+            model, history = train_tf_dnn(3, x_train, y_train)
+            eval_res = eval_model(model, x_test, y_test)
+            eval_res['train_val_loss'] = (history.history['loss'], history.history['val_loss'])
+            eval_res['train_sz'] = (100, len(x_train))
+            if TO_FILE:
+                model.save((model_type + '_model'), save_format='tf')
                 with open('tf_eval_res.pkl', 'wb+') as f:
                     pickle.dump(eval_res, f)
     elif model_type == 'sklearn':
@@ -39,6 +67,9 @@ def run_eval(model_type, x_train, x_test, y_train, y_test):
                     pickle.dump(model, f)
                 with open('sklearn_eval_res.pkl', 'wb+') as f:
                     pickle.dump(eval_res, f)
+    else:
+        return None
+
     return merge_dicts([eval_res])
 
 def run_eval_iter(model_type, x_train, x_test, y_train, y_test):
@@ -49,7 +80,7 @@ def run_eval_iter(model_type, x_train, x_test, y_train, y_test):
                 test_sz = i/100
                 _, x_slice, _, y_slice = train_test_split(x_train, y_train, test_size=test_sz)
                 
-                model, history = train_tf_dnn(x_slice, y_slice)
+                model, history = train_tf_dnn(3, x_slice, y_slice)
                 eval_res = eval_model(model, x_test, y_test)
                 eval_res['train_val_loss'] = (history.history['loss'], history.history['val_loss'])
                 eval_res['train_sz'] = (test_sz, len(x_slice))

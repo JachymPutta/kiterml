@@ -65,10 +65,17 @@ def model_v3():
                   optimizer='adam')
     return model
 
-def train_tf_dnn(x_train, y_train):
+def train_tf_dnn(version, x_train, y_train):
     early_stop = EarlyStopping(monitor='val_loss', patience=10)
 
-    model = model_v0()
+    if version == 0:
+        model = model_v0()
+    elif version == 1:
+        model = model_v1()
+    elif version == 2:
+        model = model_v2()
+    elif version == 3:
+        model = model_v3()
 
     history = model.fit(
         x_train,
@@ -80,3 +87,17 @@ def train_tf_dnn(x_train, y_train):
         callbacks=[early_stop]
     )
     return model, history
+
+def train_rs_model(model, x_train, y_train):
+    early_stop = EarlyStopping(monitor='val_loss', patience=10)
+    history = model.fit(
+        x_train,
+        y_train,
+        validation_split=0.2,
+        verbose=VERBOSE,
+        epochs=50,
+        batch_size=64,
+        callbacks=[early_stop]
+    )
+    return model, history
+
