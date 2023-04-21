@@ -65,16 +65,16 @@ def model_v3():
                   optimizer='adam')
     return model
 
-def train_tf_dnn(version, x_train, y_train):
+def train_sqnn(version, x_train, y_train):
     early_stop = EarlyStopping(monitor='val_loss', patience=10)
 
-    if version == 0:
+    if version == 'sqnn0':
         model = model_v0()
-    elif version == 1:
+    elif version == 'sqnn1':
         model = model_v1()
-    elif version == 2:
+    elif version == 'sqnn2':
         model = model_v2()
-    elif version == 3:
+    elif version == 'sqnn3':
         model = model_v3()
 
     history = model.fit(

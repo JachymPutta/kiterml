@@ -21,3 +21,16 @@ RANDOM_SEED = 42
 #Pretrained model defaults
 MODEL_BASE = 'distilbert-base-uncased'
 PROMPT = "a normalized synchronous data flow graph with weights (2,3) needs [MASK] tokens for liveness" 
+
+# Adjacency matrices
+ADJ_M_4 = [
+    [0, 1, 0, 1],
+    [1, 0, 1, 0],
+    [0, 1, 0, 1],
+    [1, 0, 1, 0]
+]
+
+AJD_M_2 = [
+    [1, 1],
+    [1, 1]
+]

@@ -1,0 +1,25 @@
+node_sets {
+  key: "nodes"
+  value {
+    features {
+      key: "throughput"
+      value {
+        description: "Throughput of the node"
+        dtype: DT_INT64
+        shape {
+          dim {
+            size: 1
+          }
+        }
+      }
+    }
+  }
+}
+edge_sets {
+  key: "edges"
+  value {
+    description: "Edges in the SDF"
+    source: "nodes"
+    target: "nodes"
+  }
+}

@@ -14,15 +14,16 @@ from constants import TF_MODEL, SKLEARN_MODEL, OUTPUT_FILE, TO_FILE, VERBOSE, DA
 from utils.data_utils import preprocess
 from utils.plot import plot_loss_curves, plot_loss_curve
 from utils.misc import write_results, write_config
-from utils.eval_utils import run_eval, run_eval_iter, eval_model
+from utils.eval_utils import run_eval, eval_model #run_eval_iter
 from models.random_search import run_random_search
-from models.tf_dnn import train_rs_model
+from models.sqnn import train_rs_model
 
 
 parser = argparse.ArgumentParser(description="KiterML: training DNNs for cyclic SDF graph liveness estimations")
 
 group = parser.add_mutually_exclusive_group(required=True)
-group.add_argument('--train_model', help='Train model from scratch', choices=['tf0', 'tf1','tf2','tf3','sklearn','random_search'])
+group.add_argument('--train_model', help='Train model from scratch', \
+                   choices=['sqnn0', 'sqnn1','sqnn2','sqnn3','sklearn','sqnn_random_search', 'gnn'])
 group.add_argument('--load_pkl', help='Load a pretrained model from a pickle file') 
 group.add_argument('--load_tf', help='Load a pretrained tensorflow model from folder') 
 
