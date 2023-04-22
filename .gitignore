@@ -3,7 +3,7 @@ res/
 figs/
 random_search/
 *model/
-model_output/
+tfgnn_data/
 .idea/
 
 *.pkl

@@ -26,7 +26,7 @@ def train_gnn(x_train, y_train):
     graph_schema = tfgnn.read_schema("models/gnn/gnn_schema.pbtxt")
     gtspec = tfgnn.create_graph_spec_from_schema_pb(graph_schema)
 
-    train_ds_provider = MyDatasetProvider("...", x_train)
+    train_ds_provider = runner.TFRecordDatasetProvider(filenames=['tfgnn_data/train.tfrecords'])
 
     initial_node_states = lambda node_set, node_set_name: node_set["throughput"]
     map_features = tfgnn.keras.layers.MapFeatures(node_sets_fn=initial_node_states)
@@ -37,7 +37,7 @@ def train_gnn(x_train, y_train):
         # strategy = tf.distribute.get_strategy(),
         strategy = tf.distribute.get_strategy(),
     # TODO: hardcoded path badness
-        model_dir = "model_output",
+        model_dir = "gnn_output",
         restore_best_weights = False
     )
 

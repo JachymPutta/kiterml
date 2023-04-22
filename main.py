@@ -64,3 +64,4 @@ else:
 
     if args.plot:
         plot_loss_curve(args.train_model , evals['train_val_loss'])
+

@@ -1,3 +1,17 @@
+context {
+    features {
+        key: "tokens"
+        value: {
+            description: "Minimum tokens for liveness"
+            dtype: DT_INT64
+            shape {
+                dim {
+                    size: 1
+                }
+            }
+        }
+    }
+}
 node_sets {
   key: "nodes"
   value {
