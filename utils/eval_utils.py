@@ -1,13 +1,13 @@
 import pickle
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
+
 from sklearn.model_selection import train_test_split
 
-from constants import TRAIN_SET_PERCENTAGE, TO_FILE
-from utils.misc import merge_dicts
-
+from constants import TO_FILE
+from models.gnn.train import train_gnn
 from models.sklearn_dnn import train_sklearn_dnn
 from models.sqnn import train_sqnn
-from models.gnn.train import train_gnn
+from utils.misc import merge_dicts
+
 
 def eval_model(model, x_test, y_test):
     print("Starging Evaluation")

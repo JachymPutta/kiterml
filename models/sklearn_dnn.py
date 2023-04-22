@@ -1,4 +1,3 @@
-from sklearn.model_selection import train_test_split
 from sklearn.neural_network import MLPClassifier
 
 def build_and_compile_model():

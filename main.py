@@ -1,19 +1,19 @@
 #!/usr/bin/env python
 # coding: utf-8
-import pickle
 import argparse
-# Disabling Tensorflow warnings -- no GPU etc. 
+# Disabling Tensorflow warnings -- no GPU etc.
 import os
-import logging
+import pickle
+
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 import tensorflow as tf
 
-from constants import TF_MODEL, SKLEARN_MODEL, OUTPUT_FILE, TO_FILE, VERBOSE, DATA_LOCATION, GRAPH_SIZE
+from constants import OUTPUT_FILE
 
 from utils.data_utils import preprocess
-from utils.plot import plot_loss_curves, plot_loss_curve
-from utils.misc import write_results, write_config
+from utils.plot import plot_loss_curve
+from utils.misc import write_results
 from utils.eval_utils import run_eval, eval_model #run_eval_iter
 from models.random_search import run_random_search
 from models.sqnn import train_rs_model

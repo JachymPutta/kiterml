@@ -1,8 +1,9 @@
-from tensorflow import keras
 from kerastuner.tuners import RandomSearch
 from sklearn.model_selection import train_test_split
+from tensorflow import keras
 
-from constants import RANDOM_SEED, TO_FILE, GRAPH_SIZE
+from constants import RANDOM_SEED
+
 
 def build_model(hp):
     model = keras.Sequential()

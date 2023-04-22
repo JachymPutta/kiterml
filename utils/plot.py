@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 
-from constants import OUTPUT_FILE, TRAIN_SET_PERCENTAGE, FIG_DIR, TO_FILE, VERBOSE
+from constants import TRAIN_SET_PERCENTAGE, FIG_DIR, TO_FILE
+
 
 def plot_predictions(preds, act_vals):
     fig, axs = plt.subplots(len(TRAIN_SET_PERCENTAGE), sharex=True, sharey=True)

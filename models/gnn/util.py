@@ -1,5 +1,6 @@
-import tensorflow_gnn as tfgnn
 import tensorflow as tf
+import tensorflow_gnn as tfgnn
+
 
 def graph_tensor_from_list(list_of_graphs):
     graphs = []

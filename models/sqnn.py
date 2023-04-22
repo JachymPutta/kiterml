@@ -1,8 +1,9 @@
+from tensorflow import keras
 from tensorflow.keras import layers
 from tensorflow.keras.callbacks import EarlyStopping
-from tensorflow import keras
 
 from constants import VERBOSE, GRAPH_SIZE
+
 
 def model_v0():
     model = keras.Sequential([

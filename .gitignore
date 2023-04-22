@@ -4,6 +4,7 @@ figs/
 random_search/
 *model/
 model_output/
+.idea/
 
 *.pkl
 *.h5

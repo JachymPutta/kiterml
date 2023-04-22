@@ -1,13 +1,9 @@
-import tensorflow_gnn as tfgnn
 import tensorflow as tf
-from tensorflow.keras import layers, models
-from tensorflow.keras.callbacks import EarlyStopping
-
+import tensorflow_gnn as tfgnn
 from tensorflow_gnn import runner
 
-from constants import GRAPH_SIZE
-from utils.data_utils import adj_matrix_cycle
 from models.gnn.train_ds_provider import MyDatasetProvider
+
 
 def model_fn(gtspec: tfgnn.GraphTensorSpec):
   """Builds a simple GNN with `ConvGNNBuilder`."""
@@ -38,6 +34,7 @@ def train_gnn(x_train, y_train):
     task = runner.GraphMeanSquaredError(node_set_name = "nodes")
 
     trainer = runner.KerasTrainer(
+        # strategy = tf.distribute.get_strategy(),
         strategy = tf.distribute.get_strategy(),
     # TODO: hardcoded path badness
         model_dir = "model_output",
