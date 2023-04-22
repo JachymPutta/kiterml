@@ -9,33 +9,6 @@ from constants import GRAPH_SIZE
 from utils.data_utils import adj_matrix_cycle
 from models.gnn.train_ds_provider import MyDatasetProvider
 
-
-def graph_tensor_from_list(list_of_graphs):
-    graphs = []
-    for item in list_of_graphs:
-        graph = tfgnn.GraphTensor.from_pieces(
-            node_sets={
-                "node": tfgnn.NodeSet.from_fields(
-                    sizes=tf.constant([4]),
-                    features={
-                        "weight": tf.constant([[x] for x in item]),
-                    },
-                )
-            },
-            edge_sets={
-                "edge": tfgnn.EdgeSet.from_fields(
-                    sizes=tf.constant([4]),
-                    adjacency=tfgnn.Adjacency.from_indices(
-                        source=("node", tf.constant([0, 1, 2, 3])),
-                        target=("node", tf.constant([1, 2, 3, 0])),
-                    ),
-                ),
-            },
-        )
-        graphs.append(graph)
-    return graphs
-
-
 def model_fn(gtspec: tfgnn.GraphTensorSpec):
   """Builds a simple GNN with `ConvGNNBuilder`."""
   convolver = tfgnn.keras.ConvGNNBuilder(
@@ -59,25 +32,31 @@ def train_gnn(x_train, y_train):
 
     train_ds_provider = MyDatasetProvider("...", x_train)
 
-    trainer = None # TODO: implement
-    task = None  # TODO: implement
-    map_features = None # TODO: implement
-    valid_ds_provider = None # TODO: implement
+    initial_node_states = lambda node_set, node_set_name: node_set["throughput"]
+    map_features = tfgnn.keras.layers.MapFeatures(node_sets_fn=initial_node_states)
 
-    runner.run(
+    task = runner.GraphMeanSquaredError(node_set_name = "nodes")
+
+    trainer = runner.KerasTrainer(
+        strategy = tf.distribute.get_strategy(),
+    # TODO: hardcoded path badness
+        model_dir = "model_output",
+        restore_best_weights = False
+    )
+
+    run_res = runner.run(
         train_ds_provider = train_ds_provider,
-        train_padding = runner.FitOrSkipPadding(gtspec, train_ds_provider),
+        # train_padding = runner.FitOrSkipPadding(gtspec, train_ds_provider),
         model_fn = model_fn,
         optimizer_fn = tf.keras.optimizers.Adam,
-        epochs = 4,
+        epochs = 1,
         trainer = trainer,
         task = task,
         gtspec = gtspec,
-        global_batch_size = 64,
+        global_batch_size = 32,
         feature_processors=[map_features],
-        valid_ds_provider = valid_ds_provider
+        # valid_ds_provider = None
     )
-    exit()
 
-    return model, history
+    return run_res.trained_model, None
 
