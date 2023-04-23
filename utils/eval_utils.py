@@ -3,7 +3,7 @@ import pickle
 from sklearn.model_selection import train_test_split
 
 from constants import TO_FILE
-from models.gnn.train import train_gnn
+from models.gnn import train_gnn
 from models.sklearn_dnn import train_sklearn_dnn
 from models.sqnn import train_sqnn
 from utils.misc import merge_dicts
@@ -35,7 +35,7 @@ def run_eval(model_type, x_train, x_test, y_train, y_test):
         if 'sqnn' in model_type:
             model, history = train_sqnn(model_type, x_train, y_train)
         elif model_type == 'gnn':
-            model, history = train_gnn(x_train, y_train)
+            model, history = train_gnn()
         else:
             raise Exception("run_eval: Unknown graph type")
 

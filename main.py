@@ -27,8 +27,8 @@ group.add_argument('--train_model', help='Train model from scratch', \
 group.add_argument('--load_pkl', help='Load a pretrained model from a pickle file') 
 group.add_argument('--load_tf', help='Load a pretrained tensorflow model from folder') 
 
-parser.add_argument('--data', help='Location of the data', required=True)
-parser.add_argument('--graph_size', help='Size of the graph', required=True)
+parser.add_argument('--data', help='Location of the data')
+parser.add_argument('--graph_size', help='Size of the graph')
 parser.add_argument('--plot', help="Create plots", action='store_true')
 parser.add_argument('--verbose', help="More verbose output", action='store_true')
 parser.add_argument('--to_file', help="Store trained model in a file", action='store_true')
@@ -39,8 +39,11 @@ args = parser.parse_args()
 # Set globals
 TO_FILE = args.to_file
 VERBOSE = args.verbose
-DATA_LOCATION = args.data
-GRAPH_SIZE = int(args.graph_size)
+
+if args.data is not None:
+    DATA_LOCATION = args.data
+if args.graph_size is not None:
+    GRAPH_SIZE = int(args.graph_size)
 
 x_train, x_test, y_train, y_test = preprocess()
 
@@ -59,9 +62,9 @@ else:
     else:
         evals = run_eval(args.train_model ,  x_train, x_test, y_train, y_test)
 
-    if args.write_results:
-        write_results(args.train_model + "_" + OUTPUT_FILE, evals)
+if args.write_results:
+    write_results(args.train_model + "_" + OUTPUT_FILE, evals)
 
-    if args.plot:
-        plot_loss_curve(args.train_model , evals['train_val_loss'])
+if args.plot:
+    plot_loss_curve(args.train_model , evals['train_val_loss'])
 
