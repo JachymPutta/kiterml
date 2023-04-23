@@ -75,8 +75,23 @@ def train_gnn():
     graph_schema = tfgnn.read_schema(GNN_SCHEMA_LOCATION)
     gtspec = tfgnn.create_graph_spec_from_schema_pb(graph_schema)
 
-    train_ds_provider = runner.TFRecordDatasetProvider(filenames=[GNN_TRAIN_LOCATION])
-    val_ds_provider = runner.TFRecordDatasetProvider(filenames=[GNN_VAL_LOCATION])
+    def decode_fn(record_bytes):
+        graph = tfgnn.parse_single_example(
+            gtspec, record_bytes, validate=True)
+
+        # extract label from context and remove from input graph
+        print(graph)
+        context_features = graph.context.get_features_dict()
+        print(context_features)
+        label = context_features.pop('tokens')
+        new_graph = graph.replace_features(context=context_features)
+
+        return new_graph, label
+
+    train_ds = tf.data.TFRecordDataset([GNN_TRAIN_LOCATION]).map(decode_fn)
+    val_ds = tf.data.TFRecordDataset([GNN_VAL_LOCATION]).map(decode_fn)
+
+    g, y = train_ds.take(1).get_single_element()
 
     initial_node_states = lambda node_set, node_set_name: node_set["throughput"]
     map_features = tfgnn.keras.layers.MapFeatures(node_sets_fn=initial_node_states)

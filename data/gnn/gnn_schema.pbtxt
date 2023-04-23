@@ -1,19 +1,17 @@
 context {
-    features {
-        key: "tokens"
-        value: {
-            description: "Minimum tokens for liveness"
-            dtype: DT_INT64
-            shape {
-                dim {
-                    size: 1
-                }
-            }
-        }
+  features {
+    key: "tokens"
+    value: {
+      description: "Minimum tokens for liveness"
+      dtype: DT_INT64
+      shape {
+        dim { size: 1 }
+      }
     }
+  }
 }
 node_sets {
-  key: "nodes"
+  key: "actor"
   value {
     features {
       key: "throughput"
@@ -21,19 +19,17 @@ node_sets {
         description: "Throughput of the node"
         dtype: DT_INT64
         shape {
-          dim {
-            size: 1
-          }
+          dim { size: 1 }
         }
       }
     }
   }
 }
 edge_sets {
-  key: "edges"
+  key: "edge"
   value {
     description: "Edges in the SDF"
-    source: "nodes"
-    target: "nodes"
+    source: "actor"
+    target: "actor"
   }
 }

@@ -4,7 +4,8 @@ import tensorflow as tf
 from sklearn.model_selection import train_test_split
 
 from utils.data_utils import preprocess
-from constants import RANDOM_SEED
+from constants import RANDOM_SEED, GNN_SCHEMA_LOCATION, \
+    GNN_TRAIN_LOCATION, GNN_VAL_LOCATION, GNN_TEST_LOCATION, GRAPH_SIZE
 
 x, x_test, y, y_test = preprocess()
 
@@ -18,31 +19,40 @@ y_train = y_train.values.tolist()
 y_val = y_val.values.tolist()
 y_test = y_test.values.tolist()
 
-graph_schema = tfgnn.read_schema("data/gnn/gnn_schema.pbtxt")
+graph_schema = tfgnn.read_schema(GNN_SCHEMA_LOCATION)
 gtspec = tfgnn.create_graph_spec_from_schema_pb(graph_schema)
 
 
-def write_gnns_to_file(x_lst, y_lst, file):
+def write_gnns_to_file(x_lst, y_lst, graph_size, file):
+    if graph_size == 2:
+        src = tf.constant([0, 1])
+        tgt = tf.constant([1, 0])
+    elif graph_size == 4:
+        src = tf.constant([0, 1, 2, 3])
+        tgt = tf.constant([1, 2, 3, 0])
+    else:
+        raise Exception("write_gnns_to_file: unsupported graph size")
     with tf.io.TFRecordWriter(file) as writer:
-        for graph, throughput in zip(x_lst, y_lst):
+        for graph, tokens in zip(x_lst, y_lst):
+            weights = tf.constant([[x] for x in graph])
             graph = tfgnn.GraphTensor.from_pieces(
                 context=tfgnn.Context.from_fields(
-                    features={'throughput': throughput}
+                    features={'tokens': tokens}
                 ),
                 node_sets={
-                    "node": tfgnn.NodeSet.from_fields(
-                        sizes=tf.constant([4]),
+                    "actor": tfgnn.NodeSet.from_fields(
+                        sizes=tf.constant([graph_size]),
                         features={
-                            "weight": tf.constant([[x] for x in graph]),
+                            "throughput": weights,
                         },
                     )
                 },
                 edge_sets={
                     "edge": tfgnn.EdgeSet.from_fields(
-                        sizes=tf.constant([4]),
+                        sizes=tf.constant([graph_size]),
                         adjacency=tfgnn.Adjacency.from_indices(
-                            source=("node", tf.constant([0, 1, 2, 3])),
-                            target=("node", tf.constant([1, 2, 3, 0])),
+                            source=("actor", src),
+                            target=("actor", tgt),
                         ),
                     ),
                 },
@@ -51,6 +61,6 @@ def write_gnns_to_file(x_lst, y_lst, file):
             writer.write(example.SerializeToString())
 
 
-write_gnns_to_file(x_train, y_train, 'data/gnn/train.tfrecords')
-write_gnns_to_file(x_val, y_val, 'data/gnn/val.tfrecords')
-write_gnns_to_file(x_test, y_test, 'data/gnn/test.tfrecords')
+write_gnns_to_file(x_train, y_train, GRAPH_SIZE, GNN_TRAIN_LOCATION)
+write_gnns_to_file(x_val, y_val, GRAPH_SIZE, GNN_VAL_LOCATION)
+write_gnns_to_file(x_test, y_test, GRAPH_SIZE, GNN_TEST_LOCATION)
