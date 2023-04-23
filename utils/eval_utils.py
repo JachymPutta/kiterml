@@ -35,7 +35,11 @@ def run_eval(model_type, x_train, x_test, y_train, y_test):
         if 'sqnn' in model_type:
             model, history = train_sqnn(model_type, x_train, y_train)
         elif model_type == 'gnn':
-            model, history = train_gnn()
+            train_ds = x_train # Renaming for clarity
+            val_ds = x_test # Renaming for clarity
+            test_ds = y_train # Renaming for clarity
+
+            model, history = train_gnn(train_ds, val_ds)
         else:
             raise Exception("run_eval: Unknown graph type")
 

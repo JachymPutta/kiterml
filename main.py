@@ -11,7 +11,7 @@ import tensorflow as tf
 
 from constants import OUTPUT_FILE
 
-from utils.data_utils import preprocess
+from utils.data_utils import preprocess, preprocess_gnn
 from utils.plot import plot_loss_curve
 from utils.misc import write_results
 from utils.eval_utils import run_eval, eval_model  # run_eval_iter
@@ -60,6 +60,10 @@ else:
         model = run_random_search(x_train, y_train)
         trained_model, _ = train_rs_model(model, x_train, y_train)
         evals = eval_model(trained_model, x_test, y_test)
+    elif args.train_model == 'gnn':
+        train_ds, val_ds, test_ds = preprocess_gnn()
+        evals = run_eval(args.train_model, train_ds, val_ds, test_ds, None)
+
     else:
         evals = run_eval(args.train_model, x_train, x_test, y_train, y_test)
 
