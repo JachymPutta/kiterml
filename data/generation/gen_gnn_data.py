@@ -8,7 +8,6 @@ from constants import RANDOM_SEED, GNN_SCHEMA_LOCATION, \
     GNN_TRAIN_LOCATION, GNN_VAL_LOCATION, GNN_TEST_LOCATION, GRAPH_SIZE
 
 x, x_test, y, y_test = preprocess()
-
 x_train, x_val, y_train, y_val = train_test_split(x, y, test_size=0.15, random_state=RANDOM_SEED)
 
 x_train = x_train.values.tolist()
@@ -34,10 +33,13 @@ def write_gnns_to_file(x_lst, y_lst, graph_size, file):
         raise Exception("write_gnns_to_file: unsupported graph size")
     with tf.io.TFRecordWriter(file) as writer:
         for graph, tokens in zip(x_lst, y_lst):
-            weights = tf.constant([[x] for x in graph])
+            weights = tf.constant([[float(x)] for x in graph])
+            graph_sum = float(sum(graph))
+            init_estimate = tf.constant([[graph_sum] for _ in graph])
+
             graph = tfgnn.GraphTensor.from_pieces(
                 context=tfgnn.Context.from_fields(
-                    features={'tokens': tokens}
+                    features={'tokens': [float(tokens[0])]}
                 ),
                 node_sets={
                     "actor": tfgnn.NodeSet.from_fields(
@@ -54,6 +56,9 @@ def write_gnns_to_file(x_lst, y_lst, graph_size, file):
                             source=("actor", src),
                             target=("actor", tgt),
                         ),
+                        features={
+                            "throughput": init_estimate,
+                        }
                     ),
                 },
             )

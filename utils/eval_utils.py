@@ -34,12 +34,20 @@ def run_eval(model_type, x_train, x_test, y_train, y_test):
     else:
         if 'sqnn' in model_type:
             model, history = train_sqnn(model_type, x_train, y_train)
+            eval_res = eval_model(model, x_test, y_test)
+            eval_res['train_val_loss'] = (history.history['loss'], history.history['val_loss'])
+            eval_res['train_sz'] = (100, len(x_train))
+            if TO_FILE:
+                model.save((model_type + '_model'), save_format='tf')
+                with open((model_type + '_eval_res.pkl'), 'wb+') as f:
+                    pickle.dump(eval_res, f)
         elif model_type == 'gnn':
             train_ds = x_train # Renaming for clarity
             val_ds = x_test # Renaming for clarity
             test_ds = y_train # Renaming for clarity
 
             model, history = train_gnn(train_ds, val_ds)
+
         else:
             raise Exception("run_eval: Unknown graph type")
 

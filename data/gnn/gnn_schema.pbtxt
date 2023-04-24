@@ -3,7 +3,7 @@ context {
     key: "tokens"
     value: {
       description: "Minimum tokens for liveness"
-      dtype: DT_INT64
+      dtype: DT_FLOAT
       shape {
         dim { size: 1 }
       }
@@ -17,7 +17,7 @@ node_sets {
       key: "throughput"
       value {
         description: "Throughput of the node"
-        dtype: DT_INT64
+        dtype: DT_FLOAT
         shape {
           dim { size: 1 }
         }
@@ -31,5 +31,15 @@ edge_sets {
     description: "Edges in the SDF"
     source: "actor"
     target: "actor"
+    features {
+      key: "throughput"
+      value {
+        description: "Throughput of the node"
+        dtype: DT_FLOAT
+        shape {
+          dim { size: 1 }
+        }
+      }
+    }
   }
 }

@@ -1,3 +1,5 @@
+import math
+
 import pandas as pd
 import tensorflow_gnn as tfgnn
 import tensorflow as tf
@@ -6,6 +8,11 @@ from sklearn.model_selection import train_test_split
 
 from constants import DATA_LOCATION, MULT_FACTOR, DUP_FACTOR, RANDOM_SEED,\
     GNN_SCHEMA_LOCATION, GNN_TRAIN_LOCATION, GNN_VAL_LOCATION, GNN_TEST_LOCATION
+
+# Make sure the data is valid
+# def test_data_2_node(data, res):
+#     assert (data[0] + data[1] - math.gcd(data[0], data[1])) == res[0]
+#     return
 
 
 def preprocess():
@@ -17,8 +24,11 @@ def preprocess():
             num_list = list(map(int, row.split(' ')))
             for m in MULT_FACTOR:
                 for i in range(DUP_FACTOR):
-                    data.append(list(map(lambda x: x * m, num_list[:-1])))
-                    results.append(list(map(lambda x: x * m, num_list[-1:])))
+                    cur_data = list(map(lambda x: x * m, num_list[:-1]))
+                    cur_res = list(map(lambda x: x * m, num_list[-1:]))
+                    # test_data_2_node(cur_data, cur_res)
+                    data.append(cur_data)
+                    results.append(cur_res)
 
     # TODO: write the train, test data to a file?
     return train_test_split(pd.DataFrame(data), pd.DataFrame(results), test_size=0.15, random_state=RANDOM_SEED)
