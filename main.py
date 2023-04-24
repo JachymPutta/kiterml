@@ -62,7 +62,7 @@ else:
         evals = eval_model(trained_model, x_test, y_test)
     elif args.train_model == 'gnn':
         train_ds, val_ds, test_ds = preprocess_gnn()
-        evals = run_eval(args.train_model, train_ds, val_ds, test_ds, None)
+        evals = run_eval(args.train_model, train_ds, val_ds, test_ds, y_test)
 
     else:
         evals = run_eval(args.train_model, x_train, x_test, y_train, y_test)

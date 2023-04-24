@@ -69,6 +69,6 @@ def train_gnn(train_ds, val_ds):
 
     history = model.fit(train_ds_batched,
                         steps_per_epoch=10,
-                        epochs=200,
+                        epochs=100,
                         validation_data=val_ds_batched)
     return model, history
