@@ -1,8 +1,9 @@
 from transformers import pipeline
 
-def run_pretrained(model_base = MODEL_BASE, prompt = PROMPT):
-    classifier = pipeline("fill-mask", model = MODEL_BASE)
-    return classifier(PROMPT)
+import constants
+def run_pretrained(model_base = constants.MODEL_BASE, prompt = constants.PROMPT):
+    classifier = pipeline("fill-mask", model = model_base)
+    return classifier(prompt)
 
 """
 Prompt:

@@ -9,7 +9,7 @@ GRAPH_SIZE = 2
 
 # Logging
 VERBOSE = False
-TO_FILE = True
+TO_FILE = False
 
 # General structure
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
