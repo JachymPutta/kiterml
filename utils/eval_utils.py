@@ -15,7 +15,7 @@ from utils.misc import merge_dicts
 
 def eval_model(model, x_test, y_test):
     # TF only
-#     eval_res = model.evaluate(x_test, y_test, verbose=1)
+    eval_res = model.evaluate(x_test, verbose=1)
     y_pred = model.predict(x_test).flatten()
     error = (100 * (y_pred - y_test.T)) / y_test.T
     abs_error = abs(error).T.sum() / len(y_test)

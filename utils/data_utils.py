@@ -1,19 +1,32 @@
 import math
 
 import pandas as pd
+import numpy as np
 import tensorflow_gnn as tfgnn
 import tensorflow as tf
 
 from sklearn.model_selection import train_test_split
 
 from constants import DATA_LOCATION, MULT_FACTOR, DUP_FACTOR, RANDOM_SEED,\
-    GNN_SCHEMA_LOCATION, GNN_TRAIN_LOCATION, GNN_VAL_LOCATION, GNN_TEST_LOCATION
+    GNN_SCHEMA_LOCATION, GNN_TRAIN_LOCATION, GNN_VAL_LOCATION, GNN_TEST_LOCATION, NORMALIZE
 
 # Make sure the data is valid
 # def test_data_2_node(data, res):
 #     assert (data[0] + data[1] - math.gcd(data[0], data[1])) == res[0]
 #     return
 
+def normalize(data):
+    # Convert the list of integers to a NumPy array
+    data_array = np.array(data)
+
+    # Compute the mean and standard deviation
+    mean = np.mean(data_array)
+    std = np.std(data_array)
+
+    # Normalize the data
+    normalized_data = (data_array - mean) / std
+
+    return normalized_data.tolist()
 
 def preprocess():
     data = []
@@ -31,6 +44,9 @@ def preprocess():
                     results.append(cur_res)
 
     # TODO: write the train, test data to a file?
+    if NORMALIZE:
+        data = normalize(data)
+
     return train_test_split(pd.DataFrame(data), pd.DataFrame(results), test_size=0.15, random_state=RANDOM_SEED)
 def preprocess_gnn():
     graph_schema = tfgnn.read_schema(GNN_SCHEMA_LOCATION)

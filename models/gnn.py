@@ -2,8 +2,8 @@ import tensorflow as tf
 import tensorflow_gnn as tfgnn
 
 
-def _build_model(graph_tensor_spec, node_dim=16, edge_dim=16, message_dim=64, next_state_dim=64,
-                 num_classes=1, num_message_passing=3, l2_regularization=5e-4, dropout_rate=0.5):
+def _build_model(graph_tensor_spec, node_dim=4,message_dim=500, next_state_dim=500,
+                num_message_passing=3, l2_regularization=5e-4, dropout_rate=0.2):
 
     input_graph = tf.keras.layers.Input(type_spec=graph_tensor_spec)
     graph = input_graph.merge_batch_to_components()
