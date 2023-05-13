@@ -6,6 +6,8 @@ DUP_FACTOR = 1
 TRAIN_SET_PERCENTAGE = [15, 35, 55, 75, 95]
 RANDOM_SEED = 42
 GRAPH_SIZE = 2
+DATA_FILE = 'data' + str(GRAPH_SIZE) + 'node.txt'
+OUT_DATA_FILE = 'data' + str(GRAPH_SIZE) + 'node-min_max.txt'
 
 # Logging
 VERBOSE = False
@@ -14,7 +16,7 @@ NORMALIZE = True
 
 # General structure
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_LOCATION = os.path.join(ROOT_DIR, 'data', ('data' + str(GRAPH_SIZE) + 'node.txt'))
+DATA_LOCATION = os.path.join(ROOT_DIR, 'data', DATA_FILE)
 OUTPUT_FILE = os.path.join(ROOT_DIR, 'results.tmp')
 FIG_DIR = os.path.join(ROOT_DIR, 'figs')
 
