@@ -17,6 +17,7 @@ all_permutations = {}
 for sublist in data:
     res = sublist[-1:][0]
     sublist = sublist[:-1]
+    sublist.sort()
     key = ','.join(map(str, sublist))
     update_dictionary(all_permutations, key, res)
 
