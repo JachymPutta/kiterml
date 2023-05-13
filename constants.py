@@ -5,7 +5,7 @@ MULT_FACTOR = [1]
 DUP_FACTOR = 1
 TRAIN_SET_PERCENTAGE = [15, 35, 55, 75, 95]
 RANDOM_SEED = 42
-GRAPH_SIZE = 2
+GRAPH_SIZE = 4
 DATA_FILE = 'data' + str(GRAPH_SIZE) + 'node.txt'
 OUT_DATA_FILE = 'data' + str(GRAPH_SIZE) + 'node-min_max.txt'
 

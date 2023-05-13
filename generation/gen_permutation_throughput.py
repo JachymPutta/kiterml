@@ -13,6 +13,7 @@ def update_dictionary(dictionary, key, value):
         dictionary.setdefault(key, []).append(value)
 
 all_permutations = {}
+
 for sublist in data:
     res = sublist[-1:][0]
     sublist = sublist[:-1]
