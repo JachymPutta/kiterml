@@ -21,6 +21,9 @@ for sublist in data:
     key = ','.join(map(str, sublist))
     update_dictionary(all_permutations, key, res)
 
+# max_length = max(len(value) for value in all_permutations.values())
+# keys_with_max_length = [key for key, value in all_permutations.items() if len(value) == max_length]
+# print(keys_with_max_length)
 
 with open(OUT_DATA_FILE, 'w') as out_data_file:
     for k, v in all_permutations.items():
