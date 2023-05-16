@@ -5,6 +5,8 @@ random_search/
 *model/
 tfgnn_data/
 .idea/
+tmp/
+results.txt
 
 *.pkl
 *.h5
