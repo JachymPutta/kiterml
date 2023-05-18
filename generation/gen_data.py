@@ -4,6 +4,8 @@
 import itertools
 import math
 import subprocess
+import multiprocessing
+from functools import partial
 
 def is_coprime(numbers):
     # Check if the GCD of all the numbers is 1
@@ -69,7 +71,7 @@ def getRes(filename, kiter_path):
     result = subprocess.run([kiter_path, '-aKPeriodicThroughput', '-f', filename], capture_output=True, text=True)
     return result.stdout
 
-def getFlow(lst, kiter_path):
+def getFlow(kiter_path, lst):
     lo, hi, mid = 1, sum(lst), 0
     # TODO: hardcoded path badness
     file_name = f"./tmp/{lst[0]}_{lst[1]}_{lst[2]}_{lst[3]}.xml"
@@ -93,12 +95,33 @@ def getFlow(lst, kiter_path):
         with open(file_name, 'w') as file:
             printGraph(lst, mid, file)
         res = getRes(file_name, kiter_path)
-        
-    with open("results.txt", "a") as file:
-        result = f"{lst[0]} {lst[1]} {lst[2]} {lst[3]} {mid}\n"
-        file.write(result)
+
+    return [lst[0],lst[1],lst[2],lst[3],mid]
+    # with open("results.txt", "a") as file:
+    #     result = f"{lst[0]} {lst[1]} {lst[2]} {lst[3]} {mid}\n"
+    #     file.write(result)
 
 def gen_dict(limit, kiter_bin_path):
     result = generate_combinations(limit)
-    for lst in result:
-        getFlow(lst, kiter_bin_path)
+    # with open("data_no_res.txt", 'w') as file:
+    #     for entry in result:
+    #         file.write(f'{entry[0]},{entry[1]},{entry[2]},{entry[3]}\n')
+    # for lst in result:
+    #     getFlow(lst, kiter_bin_path)
+
+    partial_get_flow = partial(getFlow, kiter_bin_path)
+    # Create a Pool with the desired number of processes
+    num_processes = multiprocessing.cpu_count()  # Use the number of available CPU cores
+    pool = multiprocessing.Pool(processes=num_processes)
+
+    # Apply the function to each item in parallel
+    results = pool.map(partial_get_flow, result)
+
+    # Close the pool to free resources
+    pool.close()
+    pool.join()
+
+    for result in results:
+        with open("results.txt", "a") as file:
+            cs_res = f"{result[0]},{result[1]},{result[2]},{result[3]},{result[4]}\n"
+            file.write(cs_res)
