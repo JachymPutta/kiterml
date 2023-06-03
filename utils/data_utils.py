@@ -34,7 +34,7 @@ def preprocess():
 
     with open(DATA_LOCATION) as data_file:
         for row in data_file:
-            num_list = list(map(int, row.split(' ')))
+            num_list = list(map(int, row.split(',')))
             for m in MULT_FACTOR:
                 for i in range(DUP_FACTOR):
                     cur_data = list(map(lambda x: x * m, num_list[:-1]))

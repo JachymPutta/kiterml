@@ -84,7 +84,7 @@ def train_sqnn(version, x_train, y_train):
         y_train,
         validation_split=0.2,
         verbose=constants.VERBOSE,
-        epochs=50,
+        epochs=150,
         batch_size=64,
         callbacks=[early_stop]
     )
